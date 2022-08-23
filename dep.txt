@@ -1,0 +1,199 @@
+packages
+django_on_heroku
+gnicorn
+python-dotenv
+python-decouple
+django extensions
+
+run
+pip freeze > requirements.txt
+
+create Procfile on the root folder
+Procfile
+inside procfile
+add
+web: python manage.py migrate && gunicorn MotoCar.wsgi
+
+
+create runtime.txt on the root folder
+runtime.txt
+inside runtime.txt
+add latest python runtime version
+python-3.10.1
+
+
+create a settings folder inside project folder not root folder
+move settings.py into settings folder
+rename settings.py to base.py
+create init.py , dev.py prod.py
+remove
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure-xvmdhbsf*b7-s8m%*=v_nnri5ta@an%1ru^23y%7pfo28)gb*4'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+# ALLOWED_HOSTS = ['127.0.0.1','.localhost']
+ALLOWED_HOSTS = ['*']
+
+from settings file to dev and prod 
+
+in dev file
+add 
+from .base import *
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure-xvmdhbsf*b7-s8m%*=v_nnri5ta@an%1ru^23y%7pfo28)gb*4'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+# ALLOWED_HOSTS = ['127.0.0.1','.localhost']
+ALLOWED_HOSTS = ['*']
+
+in prod file 
+add
+from .base import *
+import django_on_heroku
+# django_on_heroku.settings(locals())
+from decouple import config
+
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = config('SECRET_KEY')
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
+# ALLOWED_HOSTS = ['127.0.0.1','.localhost']
+ALLOWED_HOSTS = [
+    'motocar-carsell.herokuapp.com'
+]
+
+change manage.py file 
+from
+ """Run administrative tasks."""
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MotoCar.settings')
+    try:
+
+to
+ """Run administrative tasks."""
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MotoCar.settings.dev')
+    try:
+change wsgi.py
+from
+   from django.core.wsgi import get_wsgi_application
+
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MotoCar.settings')
+to 
+  os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MotoCar.settings.dev')
+
+  application = get_wsgi_application()
+change asgi.py 
+from 
+	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MotoCar.settings')
+
+        application = get_asgi_application()
+to 
+	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MotoCar.settings.dev')
+
+        application = get_asgi_application()
+change settings/base.py
+from
+BASE_DIR = Path(__file__).resolve().parent.parent
+to
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+
+
+
+
+
+
+confirm this 
+# security settings
+# after https is configured 
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+
+# # content security policy
+# CSP_DEFAULT_SRC=("'self'",)
+# CSP_STYLE_SRC=("'self'",)
+# CSP_SCRIPT_SRC=("'self'",)
+# CSP_IMG_SRC=("'self'",)
+# CSP_FONT_SRC=("'self'",)
+
+# # http sttrict transport security
+# SECURE_HSTS_SECONDS = 0
+# SECURE_HSTS_INCLUDE_SUBDOMAINS =True
+# SECURE_HSTS_PRELOAD = True 
+
+# # SECURE SSL REDIRECT
+# SECURE_SSL_REDIRECT =True
+
+change to 
+DEBUG = False
+ALLOWED_HOSTS = ['127.0.0.1','.localhost']
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+("'self'",
+
+
+
+"whitenoise.middleware.WhiteNoiseMiddleware",
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+INSTALLED_APPS = [
+    # ...
+    "whitenoise.runserver_nostatic",
+    "django.contrib.staticfiles",
+    # ...
+]
+
+
+
+DEployemnt
+git add .
+git commit -m 'message'
+heroku apps:create motocar-carsell
+git remote heroku
+heroku addons:create heroku-postgresql:hobby-dev
+py manage.py generate_secret_key add to heroku settings config vars
+heroku config:set DJANGO_SETTING_MODULE=config.settings.prod
+git push heroku main
+heroku open
+
+heroku run bash
+python manage.py createsuperuser --username Johb
+
+
+
+
+
+
+
