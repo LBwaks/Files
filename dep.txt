@@ -1,4 +1,4 @@
-packages
+1. packages
 django_on_heroku
 gnicorn
 python-dotenv
@@ -117,8 +117,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 
-
-confirm this 
 # security settings
 # after https is configured 
 # CSRF_COOKIE_SECURE = True
@@ -177,7 +175,7 @@ INSTALLED_APPS = [
 
 
 
-DEployemnt
+Deployemnt
 git add .
 git commit -m 'message'
 heroku apps:create motocar-carsell
